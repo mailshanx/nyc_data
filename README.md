@@ -16,11 +16,9 @@ Project Organization
     │   └── raw            <- The original, immutable data dump.
     │    │
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── notebooks          <- Jupyter notebooks
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    ├── reports            <- Empty
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
@@ -29,22 +27,33 @@ Project Organization
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
+    │   ├── data           <- Package to clean and filter out Jan / Feb data
     │   │   └── make_dataset.py
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
+    │   ├── features       <- Package to turn raw data into features for modeling
     │   │   └── build_features.py
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
+    │   ├── models         <- Package to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   │   ├── batch_predict.py
+    │   │   └── evaluate_model.py
+            └── train_model.py
+    │   │  
     │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-     
-
-
+    │   └── tests          <- Packages for testing
+    │   │    └── test_make_dataset.py
+             │-- data       <- holds test data
+    │   │
+    │   └── visualization  <- unused
+    │   │    └── visualize.py
+    │   └── utils          <- Utilities package
+    │   │    └── log_config.py
+    │   │    └── utils.py
+    │   │
+    │   │
+    │   │-- spark_session.py <- retrieves spark session
+    │
+    │---setting.py          <- holds critical project-level settings and paths
 --------
 
 ## Instructions to run this tool
