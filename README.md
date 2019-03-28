@@ -170,6 +170,9 @@ Currently, the `src.models.train_model.EnsembleModel` class only has
 
 ![](./reports/figures/ml_arch1.png)
 
+StringEncoder and FormEncoder consist of a series of `StringIndexer` and `RFormula` and `VectorIndexer`
+respectively. See the `src.models` package for details.
+
 ## Model persistence
 
 The trained models are saved in `data/processed/ml_model`. This folder further 
