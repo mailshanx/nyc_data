@@ -40,12 +40,21 @@ class Featurizer:
 
 
 def featurize(df):
-    #very basic, lots of potential to add more
+    '''
+    featurizes raw dataframe
+    :param df:
+    :return:
+    '''
     df = featurize_trip_duration(df)
     return df
 
 
 def featurize_trip_duration(df):
+    '''
+    trip duration as a feature
+    :param df:
+    :return:
+    '''
     diff_secs_col = f.col("dropoff_datetime").cast("long") - f.col("pickup_datetime").cast("long")
     df = df.withColumn("trip_duration_m", diff_secs_col / 60.0)
     return df

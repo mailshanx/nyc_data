@@ -39,6 +39,10 @@ class MakeDatasetTest(PySparkTest):
 
 
     def test_make_sample_batch_csv(self):
+        '''
+        Tests sample batch file generation
+        :return:
+        '''
         storage_dir, filename_csv, filename_parquet = make_dataset.make_sample_batch_csv()
         nyc_batch = make_dataset.ingest_raw_csv(raw_csv_filename=filename_csv, storage_dir=storage_dir,
                                                 tip_amount_present=False, cleanup=True)

@@ -10,7 +10,10 @@ logger = log_config.get_logger(__name__)
 
 
 def evaluate_model():
-    # will read train and test files to evaluate model
+    '''
+    will read train and test files from jan and Feb 2017 to evaluate model
+    :return:
+    '''
     ml_model = train_model.EnsembleModel()
     df_raw_train_filepath = os.path.join(setting.data_dir_interim, setting.raw_train_filename)
     df_raw_test_filepath = os.path.join(setting.data_dir_interim, setting.raw_test_filename)

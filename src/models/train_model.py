@@ -13,6 +13,9 @@ from src.utils import log_config
 logger = log_config.get_logger(__name__)
 
 class EnsembleModel:
+    '''
+    Main class to manage ensemble models
+    '''
     def __init__(self, load_existing=False, path=setting.ml_model_dir):
         self.models = {}
         self._namelist = ["enet", "gbtree"]
@@ -66,7 +69,11 @@ class EnsembleModel:
 
 
 def train_and_save(path=setting.ml_model_dir):
-    #trains and saves a model on January 2017 data
+    '''
+    trains and saves a model on January 2017 data
+    :param path:
+    :return:
+    '''
     df_raw_train_filepath = os.path.join(setting.data_dir_interim, setting.raw_train_filename)
 
     logger.info("using data stored in {} to train and save model in {}".format(df_raw_train_filepath, path))

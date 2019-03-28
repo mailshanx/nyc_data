@@ -80,7 +80,14 @@ def filter_train_test(df_raw):
 def make_sample_batch_csv(storage_dir=setting.data_dir_interim,
                           filename_parquet=setting.batch_filename_parquet,
                           filename_csv=setting.batch_filename_csv, fraction=0.001):
-
+    '''
+    Generates sample batch file for testing batch predictions
+    :param storage_dir:
+    :param filename_parquet:
+    :param filename_csv:
+    :param fraction:
+    :return:
+    '''
     nyc_raw = ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename, cleanup=False)
     nyc_raw_sample = nyc_raw.sample(withReplacement=False, fraction=fraction)
     nyc_batch = nyc_raw_sample.drop('tip_amount')
