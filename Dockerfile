@@ -11,7 +11,7 @@ USER root
 
 
 #setup filesystem
-RUN mkdir /home/jovyan/work/nyc_data
+#RUN mkdir /home/jovyan/work/nyc_data
 RUN fix-permissions /home/jovyan/work/nyc_data
 
 

@@ -47,7 +47,7 @@ Project Organization
 
 --------
 
-### Instructions
+### Instructions to run this tool
 
 The repository is hosted at https://github.com/mailshanx/nyc_data
 
@@ -58,5 +58,42 @@ git clone https://github.com/mailshanx/nyc_data
 cd nyc_data
 ```
 
+Build the docker container:
+
+```bash
+./build_docker.sh
+```
+
+The Makefile presents a simple interface to manage and use this too.
+
+First, we need to download and pre-process the data.
+
+```bash
+make data
+```
+
+We can verify that the tests run:
+
+```bash
+make tests
+``` 
 
 
+Next, we need to train and same the model. This will save the model data/processed folder.
+
+
+```bash
+make model
+```
+
+Let us evaluate our model:
+
+```bash
+make evaluate_model
+```
+
+We can now use this tool for batch predictions:
+
+```bash
+
+```
