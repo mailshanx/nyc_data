@@ -1,5 +1,5 @@
-FROM jupyter/all-spark-notebook
-#FROM mailshanx/nyc_data:v1
+#FROM jupyter/all-spark-notebook
+FROM mailshanx/nyc_data:v1
 
 LABEL maintainer="Satish Shankar"
 
@@ -9,17 +9,6 @@ EXPOSE 7745
 USER root
 #USER $NB_UID
 
-# Install pyspark
-#RUN conda install --quiet --yes pyspark && \
-#    conda clean -tipsy && \
-#    fix-permissions $CONDA_DIR && \
-#    fix-permissions /home/$NB_USER
-
-#Install pyarrow
-#RUN conda install --quiet --yes pyarrow && \
-#    conda clean -tipsy && \
-#    fix-permissions $CONDA_DIR && \
-#    fix-permissions /home/$NB_USER
 
 #setup filesystem
 RUN mkdir /home/jovyan/work/nyc_data
