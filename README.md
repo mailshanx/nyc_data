@@ -180,6 +180,38 @@ class.
 
 ## Batch predictions
 
+Batch predictions are available by running 
+
+```bash
+python -m src.models.batch_predict
+```
+
+It takes optional arguments for input csv file and output file. 
+
+For usage, see 
+
+```bash
+python -m src.models.batch_predict --help
+
+usage: batch_predict.py [-h] [--infilename INFILENAME]
+                        [--outfilename OUTFILENAME]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --infilename INFILENAME, -ifn INFILENAME
+                        Name of input CSV file for batch prediction. Make sure
+                        to store it indata/interim folder. Expected format is
+                        vendor_id, pickup_datetime,dropoff_datetime,
+                        store_and_fwd_flag,ratecode_id,pu_location_id,
+                        do_location_id,passenger_count,trip_distance,
+                        fare_amount,extra,mta_tax,tolls_amount,ehail_fee,
+                        improvement_surcharge,total_amount,payment_type,
+                        trip_type
+  --outfilename OUTFILENAME, -ofn OUTFILENAME
+                        Name of output file for batch predictions. File will
+                        be stored in data/processed folder.
+
+```
 
 
 
