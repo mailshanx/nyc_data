@@ -47,7 +47,7 @@ Project Organization
 
 --------
 
-### Instructions to run this tool
+## Instructions to run this tool
 
 The repository is hosted at https://github.com/mailshanx/nyc_data
 
@@ -64,7 +64,7 @@ Build the docker container:
 ./build_docker.sh
 ```
 
-The Makefile presents a simple interface to manage and use this too.
+The Makefile presents a simple interface to manage and use this tool.
 
 First, we need to download and pre-process the data.
 
@@ -95,5 +95,94 @@ make evaluate_model
 We can now use this tool for batch predictions:
 
 ```bash
+python -m src.models.batch_predict 
+```
+
+This will use the pre-saved CSV file nyc_batch.csv from data/interim and store
+the batch predictions in data/processed/nyc_batch_predictions.parquet
+
+The tool takes optional commandline arguments for input CSV filenames and output 
+filenames.
+
+Files for batch predictions are expected in the data/interim folder. The results
+will be stored in data/processed.
+
+```bash
+python -m src.models.batch_predict --help
+
+usage: batch_predict.py [-h] [--infilename INFILENAME]
+                        [--outfilename OUTFILENAME]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --infilename INFILENAME, -ifn INFILENAME
+                        Name of input CSV file for batch prediction. Make sure
+                        to store it indata/interim folder. Expected format is
+                        vendor_id, pickup_datetime,dropoff_datetime,
+                        store_and_fwd_flag,ratecode_id,pu_location_id,
+                        do_location_id,passenger_count,trip_distance,
+                        fare_amount,extra,mta_tax,tolls_amount,ehail_fee,
+                        improvement_surcharge,total_amount,payment_type,
+                        trip_type
+  --outfilename OUTFILENAME, -ofn OUTFILENAME
+                        Name of output file for batch predictions. File will
+                        be stored in data/processed folder.
 
 ```
+
+## Analysis and visualization
+
+Histogram of tip amounts:
+
+![](./reports/figures/tip_amount.png)
+
+The median tip is zero - half the riders don't tip.
+
+Let us see distribution of trip durations:
+
+![](./reports/figures/hist_trip_duration.png)
+
+We see that most trips are rather short - most of them are less that 10 minutes.
+
+Here is a boxplot of tip amount grouped by passengers:
+
+![](./reports/figures/tip_vs_passenger_cnt.png)
+
+Tip amount generally increases with fare:
+
+![](./reports/figures/fare_vs_tip.png)
+
+Tip amount also generally increases with trip duration:
+
+![](./reports/figures/trip_duration_vs_tip.png)
+
+## ML Architecture
+
+This system uses an ensemble modelling system. The first part of the 
+modelling pipeline is shared. Eventually, the output of the shared pipeline 
+feeds into multiple ML models, and their results are averaged in the end.
+
+The `src.models.train_model.EnsembleModel` class is designed to train, persist and 
+save a list of candidate models.
+
+Currently, the `src.models.train_model.EnsembleModel` class only has
+`GBTRegressor` and `LinearRegression`, but it is easy to add more.
+
+![](./reports/figures/ml_arch1.png)
+
+## Model persistence
+
+The trained models are saved in `data/processed/ml_model`. This folder further 
+subdivides into individual folder for each model in the ensemble.
+
+The persistence and loading are automatically managed by the `src.models.train_model.EnsembleModel`
+class.
+
+## Batch predictions
+
+
+
+
+
+
+

@@ -27,7 +27,7 @@ download:	data/raw/nyc_raw.csv
 rawpreprocess:	data/interim/df_raw_train.parquet data/interim/df_raw_test.parquet data/interim/nyc_batch.csv
 
 ## make model
-model:	data/processed/ml_model data tests
+model:	data/processed/ml_model data
 
 data/raw/nyc_raw.csv:
 	wget $(DOWNLOAD_URL) -O data/raw/nyc_raw.csv
