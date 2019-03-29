@@ -75,8 +75,9 @@ Build the docker container:
 
 The Makefile presents a simple interface to manage and use this tool.
 
-First, we need to download and pre-process the data. The preprocessing will 
-filter data from Jan and Feb 2017 and save it to `df_raw_train.parquet` 
+First, we need to download and pre-process the data. The download URL is saved in the `$(DOWNLOAD_URL)` 
+variable in the Makefile. 
+The preprocessing will  filter data from Jan and Feb 2017 and save it to `df_raw_train.parquet` 
 and `df_raw_test.parquet` in the data/interim folder. The filenames 
 are configured in `setting.py`. 
 
