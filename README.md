@@ -100,13 +100,13 @@ make model
 ```
 
 Let us evaluate our model's performance. This will use the data from January 2017 and 
-Feb 2017 to evaluate the model performance in terms of RMSE:
+Feb 2017 to evaluate the model's performance on validation and test sets in terms of RMSE:
 
 ```bash
 make evaluate_model
 ```
 
-We can now use this tool for batch predictions:
+We are ready to use this tool for batch predictions:
 
 ```bash
 python -m src.models.batch_predict 
