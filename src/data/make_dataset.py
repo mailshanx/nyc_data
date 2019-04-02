@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import logging
 import argparse
 import datetime
-import pyspark
 import pandas as pd
-import pickle
-import numpy as np
-from pyspark.sql import types as t
 from pyspark.sql import functions as f
 from src.spark_session import spark
 import setting
@@ -28,26 +23,36 @@ def ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename,
     '''
     nyc_raw_csv_filepath = os.path.join(storage_dir, raw_csv_filename)
     logger.info("ingesting raw csv file from {}".format(nyc_raw_csv_filepath))
-    df_raw = spark.read.csv(path=nyc_raw_csv_filepath, header=True, inferSchema=True)
+    df_raw = spark.read.csv(path=nyc_raw_csv_filepath,
+                            header=True, inferSchema=True)
     if tip_amount_present:
-        df_col_names = ['vendor_id', 'pickup_datetime', 'dropoff_datetime',
-                        'store_and_fwd_flag', 'ratecode_id', 'pu_location_id', 'do_location_id',
-                        'passenger_count', 'trip_distance', 'fare_amount', 'extra', 'mta_tax',
-                        'tip_amount', 'tolls_amount', 'ehail_fee', 'improvement_surcharge',
-                        'total_amount', 'payment_type', 'trip_type']
+        df_col_names = [
+            'vendor_id', 'pickup_datetime', 'dropoff_datetime',
+            'store_and_fwd_flag', 'ratecode_id', 'pu_location_id',
+            'do_location_id', 'passenger_count', 'trip_distance',
+            'fare_amount', 'extra', 'mta_tax', 'tip_amount',
+            'tolls_amount', 'ehail_fee', 'improvement_surcharge',
+            'total_amount', 'payment_type', 'trip_type']
     else:
-        df_col_names = ['vendor_id', 'pickup_datetime', 'dropoff_datetime',
-                        'store_and_fwd_flag', 'ratecode_id', 'pu_location_id', 'do_location_id',
-                        'passenger_count', 'trip_distance', 'fare_amount', 'extra', 'mta_tax',
-                        'tolls_amount', 'ehail_fee', 'improvement_surcharge',
-                        'total_amount', 'payment_type', 'trip_type']
+        df_col_names = [
+            'vendor_id', 'pickup_datetime', 'dropoff_datetime',
+            'store_and_fwd_flag', 'ratecode_id', 'pu_location_id',
+            'do_location_id', 'passenger_count', 'trip_distance',
+            'fare_amount', 'extra', 'mta_tax', 'tolls_amount',
+            'ehail_fee', 'improvement_surcharge', 'total_amount',
+            'payment_type', 'trip_type']
     df_raw = df_raw.toDF(*df_col_names)
-    df_raw = df_raw.withColumn("pickup_datetime", f.to_timestamp(df_raw.pickup_datetime, 'MM/dd/yyyy hh:mm:ss a'))
-    df_raw = df_raw.withColumn("dropoff_datetime", f.to_timestamp(df_raw.dropoff_datetime, 'MM/dd/yyyy hh:mm:ss a'))
+    df_raw = df_raw.withColumn("pickup_datetime",
+                               f.to_timestamp(df_raw.pickup_datetime,
+                                              'MM/dd/yyyy hh:mm:ss a'))
+    df_raw = df_raw.withColumn("dropoff_datetime",
+                               f.to_timestamp(df_raw.dropoff_datetime,
+                                              'MM/dd/yyyy hh:mm:ss a'))
     if cleanup:
         # drop ehail fee, it is null in the entire dataset
         df_raw = df_raw.drop('ehail_fee')
-    logger.info("ingested and cleaned raw csv file {}".format(nyc_raw_csv_filepath))
+    logger.info("ingested and cleaned raw csv file "
+                "{}".format(nyc_raw_csv_filepath))
     return df_raw
 
 
@@ -57,29 +62,43 @@ def filter_and_persist_train_test_raw(df_raw):
     :param df_raw:
     :return:
     '''
-    df_raw_train_filepath = os.path.join(setting.data_dir_interim, setting.raw_train_filename)
-    df_raw_test_filepath = os.path.join(setting.data_dir_interim, setting.raw_test_filename)
+    df_raw_train_filepath = os.path.join(setting.data_dir_interim,
+                                         setting.raw_train_filename)
+    df_raw_test_filepath = os.path.join(setting.data_dir_interim,
+                                        setting.raw_test_filename)
     df_raw_train, df_raw_test = filter_train_test(df_raw=df_raw)
-    logger.info("writing raw train and test files to {} and {}".format(df_raw_train_filepath, df_raw_test_filepath))
+    logger.info("writing raw train and test files to {} and "
+                "{}".format(df_raw_train_filepath, df_raw_test_filepath))
     df_raw_train.write.parquet(path=df_raw_train_filepath, mode="overwrite")
     df_raw_test.write.parquet(path=df_raw_test_filepath, mode="overwrite")
 
 
 def filter_train_test(df_raw):
     train_date_start = pd.to_datetime(setting.train_date_start)
-    train_date_cutoff = pd.to_datetime(setting.train_date_end) + datetime.timedelta(days=1)
+    train_date_cutoff = \
+        pd.to_datetime(setting.train_date_end) \
+        + datetime.timedelta(days=1)
 
     test_date_start = pd.to_datetime(setting.test_date_start)
-    test_date_cutoff = pd.to_datetime(setting.test_date_end) + datetime.timedelta(days=1)
+    test_date_cutoff = \
+        pd.to_datetime(setting.test_date_end)\
+        + datetime.timedelta(days=1)
 
-    df_raw_train = filter_by_dates(df_raw, "pickup_datetime", train_date_start, train_date_cutoff)
-    df_raw_test = filter_by_dates(df_raw, "pickup_datetime", test_date_start, test_date_cutoff)
+    df_raw_train = filter_by_dates(df_raw,
+                                   "pickup_datetime",
+                                   train_date_start,
+                                   train_date_cutoff)
+    df_raw_test = filter_by_dates(df_raw,
+                                  "pickup_datetime",
+                                  test_date_start,
+                                  test_date_cutoff)
     return df_raw_train, df_raw_test
 
 
 def make_sample_batch_csv(storage_dir=setting.data_dir_interim,
                           filename_parquet=setting.batch_filename_parquet,
-                          filename_csv=setting.batch_filename_csv, fraction=0.001):
+                          filename_csv=setting.batch_filename_csv,
+                          fraction=0.001):
     '''
     Generates sample batch file for testing batch predictions
     :param storage_dir:
@@ -88,22 +107,27 @@ def make_sample_batch_csv(storage_dir=setting.data_dir_interim,
     :param fraction:
     :return:
     '''
-    nyc_raw = ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename, cleanup=False)
-    nyc_raw_sample = nyc_raw.sample(withReplacement=False, fraction=fraction)
+    nyc_raw = ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename,
+                             cleanup=False)
+    nyc_raw_sample = nyc_raw.sample(withReplacement=False,
+                                    fraction=fraction)
     nyc_batch = nyc_raw_sample.drop('tip_amount')
     nyc_batch_filepath_parquet = os.path.join(storage_dir, filename_parquet)
     nyc_batch_filepath_csv = os.path.join(storage_dir, filename_csv)
-    logger.info("writing batch file in parquet format to {}".format(nyc_batch_filepath_parquet))
+    logger.info("writing batch file in parquet format to "
+                "{}".format(nyc_batch_filepath_parquet))
     nyc_batch.write.parquet(nyc_batch_filepath_parquet, mode="overwrite")
     nyc_batch_pd = utils.parquet_dir_to_pandas_df(nyc_batch_filepath_parquet)
-    logger.info("writing batch file in csv format to {}".format(nyc_batch_filepath_csv))
+    logger.info("writing batch file in csv format to "
+                "{}".format(nyc_batch_filepath_csv))
     nyc_batch_pd.to_csv(nyc_batch_filepath_csv, index=False)
     return storage_dir, filename_csv, filename_parquet
 
 
 def filter_by_dates(df, col_name, date_start, date_cutoff):
     assert date_start <= date_cutoff
-    df_date_filtered = df.filter((f.col(col_name) >= date_start) & (f.col(col_name) < date_cutoff))
+    df_date_filtered = df.filter((f.col(col_name) >= date_start)
+                                 & (f.col(col_name) < date_cutoff))
     return df_date_filtered
 
 

@@ -20,9 +20,12 @@ nyc_raw_csv_filename = "nyc_raw.csv"
 raw_train_filename = "df_raw_train.parquet"
 raw_test_filename = "df_raw_test.parquet"
 
-batch_filename_parquet = "nyc_batch.parquet"  # filenames for sample batch prediction files
+batch_filename_parquet =\
+    "nyc_batch.parquet"  # filenames for sample batch prediction files
 batch_filename_csv = "nyc_batch.csv"
-batch_predictions_outfilename = "nyc_batch_predictions.parquet"  # default filename for batch prediction output
+
+batch_predictions_outfilename = \
+    "nyc_batch_predictions.parquet"  # filename for batch prediction output
 
 log_filename = "nyc_log.log"  # stored in data/interim
 
