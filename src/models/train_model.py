@@ -12,10 +12,9 @@ from src.features import build_features
 from src.utils import log_config
 logger = log_config.get_logger(__name__)
 
+
 class EnsembleModel:
-    '''
-    Main class to manage ensemble models
-    '''
+    # Main class to manage ensemble models
     def __init__(self, load_existing=False, path=setting.ml_model_dir):
         self.models = {}
         self._namelist = ["enet", "gbtree"]
@@ -31,6 +30,11 @@ class EnsembleModel:
                            "gbtree": Pipeline(stages=[Featurizer().featurizer, self.gbtree])}
 
     def fit(self, df):
+        """
+        Fits ensemble model to dataframe
+        :param df: dataframe to fit
+        :return: self
+        """
         for name, model in self.models.items():
             self.models[name] = model.fit(df)
 
@@ -49,7 +53,7 @@ class EnsembleModel:
             old_predictions = new_predictions
         col_list = [f.col("prediction_gbtree"), f.col("prediction_enet")]
         assert len(col_list) == len(self._namelist)
-        #store mean of predictions
+        # store mean of predictions
         old_predictions = old_predictions.withColumn("prediction", (col_list[0] + col_list[1])/len(col_list))
         return self, old_predictions
 
@@ -69,11 +73,11 @@ class EnsembleModel:
 
 
 def train_and_save(path=setting.ml_model_dir):
-    '''
+    """
     trains and saves a model on January 2017 data
     :param path:
     :return:
-    '''
+    """
     df_raw_train_filepath = os.path.join(setting.data_dir_interim, setting.raw_train_filename)
 
     logger.info("using data stored in {} to train and save model in {}".format(df_raw_train_filepath, path))

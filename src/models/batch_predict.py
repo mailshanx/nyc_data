@@ -12,7 +12,14 @@ logger = log_config.get_logger(__name__)
 def _batch_predict_and_save(df, ml_model,
                             batch_predictions_outfilename,
                             storage_dir_out):
-    # uses existing model for batch predictions
+    """
+    runs batch predictions and saves output in parquet files (use as private method)
+    :param df:
+    :param ml_model:
+    :param batch_predictions_outfilename:
+    :param storage_dir_out:
+    :return:
+    """
     df_featurized = build_features.featurize(df)
     ml_model, predictions = ml_model.transform(df_featurized)
 
@@ -29,6 +36,14 @@ def batch_predict_and_save(
         storage_dir_infile=setting.data_dir_interim,
         batch_predictions_outfilename=setting.batch_predictions_outfilename,
         storage_dir_out=setting.data_dir_processed):
+    """
+    runs batch predictions and saves output in parquet files
+    :param csv_infilename: Input filename
+    :param storage_dir_infile: storage directory for input file
+    :param batch_predictions_outfilename: output filename
+    :param storage_dir_out: storage directory for output file
+    :return: None
+    """
     df = make_dataset.ingest_raw_csv(raw_csv_filename=csv_infilename,
                                      storage_dir=storage_dir_infile,
                                      tip_amount_present=False,

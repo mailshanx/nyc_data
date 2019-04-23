@@ -1,7 +1,13 @@
 import os
 
+# spark config
 spark_master = "local[*]"
+spark_executor_memory = "2g"
+spark_driver_memory = "2g"
+spark_app_name = "nyc_data"
+spark_error_level = "ERROR"
 
+# file and directory paths
 project_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(project_dir, "data")
 

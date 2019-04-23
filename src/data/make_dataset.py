@@ -13,14 +13,14 @@ logger = log_config.get_logger(__name__)
 def ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename,
                    storage_dir=setting.data_dir_raw,
                    cleanup=True, tip_amount_present=True):
-    '''
+    """
     Ingests raw CSV file to pyspark dataframe
     :param raw_csv_filename:
     :param storage_dir:
     :param cleanup:
     :param tip_amount_present:
     :return:
-    '''
+    """
     nyc_raw_csv_filepath = os.path.join(storage_dir, raw_csv_filename)
     logger.info("ingesting raw csv file from {}".format(nyc_raw_csv_filepath))
     df_raw = spark.read.csv(path=nyc_raw_csv_filepath,
@@ -57,11 +57,11 @@ def ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename,
 
 
 def filter_and_persist_train_test_raw(df_raw):
-    '''
+    """
     Filters and saves the January and February datasets
     :param df_raw:
     :return:
-    '''
+    """
     df_raw_train_filepath = os.path.join(setting.data_dir_interim,
                                          setting.raw_train_filename)
     df_raw_test_filepath = os.path.join(setting.data_dir_interim,
@@ -99,14 +99,14 @@ def make_sample_batch_csv(storage_dir=setting.data_dir_interim,
                           filename_parquet=setting.batch_filename_parquet,
                           filename_csv=setting.batch_filename_csv,
                           fraction=0.001):
-    '''
+    """
     Generates sample batch file for testing batch predictions
     :param storage_dir:
     :param filename_parquet:
     :param filename_csv:
     :param fraction:
     :return:
-    '''
+    """
     nyc_raw = ingest_raw_csv(raw_csv_filename=setting.nyc_raw_csv_filename,
                              cleanup=False)
     nyc_raw_sample = nyc_raw.sample(withReplacement=False,
@@ -132,11 +132,11 @@ def filter_by_dates(df, col_name, date_start, date_cutoff):
 
 
 def remove_outliers(df_raw):
-    '''
+    """
     Removes outliers
     :param df_raw:
     :return:
-    '''
+    """
     diff_secs_col = f.col("dropoff_datetime").cast("long") - f.col("pickup_datetime").cast("long")
     df_raw = df_raw.withColumn("trip_duration_m", diff_secs_col / 60.0)
     df_raw = df_raw.filter((f.col("tip_amount") >= 0) & (f.col("tip_amount") < 20)

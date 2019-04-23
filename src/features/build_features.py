@@ -51,21 +51,21 @@ class Featurizer:
 
 
 def featurize(df):
-    '''
+    """
     featurizes raw dataframe
     :param df:
     :return:
-    '''
+    """
     df = featurize_trip_duration(df)
     return df
 
 
 def featurize_trip_duration(df):
-    '''
+    """
     trip duration as a feature
     :param df:
     :return:
-    '''
+    """
     diff_secs_col = \
         f.col("dropoff_datetime").cast("long") \
         - f.col("pickup_datetime").cast("long")
